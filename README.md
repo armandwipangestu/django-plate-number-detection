@@ -10,6 +10,8 @@
 
 </div>
 
+<img src="assets/preview.png" alt="Preview">
+
 <p align="center">This repository is web application that aims to provide various features such as video live stream, haarcascade classifier, and optical character recognition (OCR). This app is built using Python, OpenCV, Django, TailwindCSS (django-tailwind), EasyOCR</p>
 
 ## Table of Contents
@@ -23,11 +25,12 @@
         -   [OpenCV imshow The function is not implemented](#opencv-imshow-the-function-is-not-implemented)
     -   [Windows](#windows)
         -   [PyTorch Library fbgem.dll](#pytorch-library-fbgemdll)
+        -   [OMP: Error #15: Initializing libiomp5md.dll](#omp-error-15-initializing-libiomp5mddll-but-found-libomp140x86_64dll-already-initialized)
 -   [Credits](#credits)
 
 ## Demo App
 
-![Demo App](assets/demo-app.gif)
+![Django Plate Number Detection](https://youtu.be/UhFOGqWI2NE)
 
 ## Tech Stack
 
@@ -134,6 +137,17 @@ If you got error the PyTorch library like this `OSError: [WinError 126] The spec
 -   Discuss PyTorch - Failed to import pytorch fbgemm.dll or one of its dependencies is missing: [#22](https://discuss.pytorch.org/t/failed-to-import-pytorch-fbgemm-dll-or-one-of-its-dependencies-is-missing/201969/22)
 -   Discuss PyTorch - Failed to import pytorch fbgemm.dll or one of its dependencies is missing: [#23](https://discuss.pytorch.org/t/failed-to-import-pytorch-fbgemm-dll-or-one-of-its-dependencies-is-missing/201969/23)
 -   DLLme - libomp140.x86_64.dll: [Download](https://www.dllme.com/dll/files/libomp140_x86_64/00637fe34a6043031c9ae4c6cf0a891d/download)
+
+#### OMP: Error #15: Initializing libiomp5md.dll, but found libomp140.x86_64.dll already initialized.
+
+> **NOTE**: That is dangerous, since it can degrade performance or cause incorrect results. The best thing to do is to ensure that only a single OpenMP runtime is linked into the process, e.g. by avoiding static linking of the OpenMP runtime in any library. As an unsafe, unsupported, undocumented workaround you can set the environment variable KMP_DUPLICATE_LIB_OK=TRUE to allow the program to continue to execute, but that may cause crashes or silently produce incorrect results. For more information, please see http://www.intel.com/software/products/support/.
+
+If you got this error, you can add this code at file `manage.py`
+
+```python
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+```
 
 ## Credits
 
