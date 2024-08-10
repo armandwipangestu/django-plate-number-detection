@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os
+# Uncomment code below if you have problem library libiomp5md.dll
+#os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 import sys
 
 
