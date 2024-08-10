@@ -1,0 +1,5 @@
+opencv-python==4.10.0.84
+easyocr==1.7.1
+django==4.2.2
+django-tailwind==3.8.0
+django-tailwind[reload]==3.8.0

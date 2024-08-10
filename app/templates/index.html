@@ -1,0 +1,337 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Plate Number Detection</title>
+        {% tailwind_css %}
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+            rel="stylesheet"
+        />
+
+        <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+    </head>
+    <body class="">
+        <header
+            class="w-full py-10 mx-auto flex justify-around items-center z-50 dark:bg-primary dark:text-white"
+        >
+            <div class="font-bold text-lg">
+                <p>Plate Number Detection</p>
+            </div>
+
+            <nav class="flex justify-center gap-x-8 gap-y-4">
+                <ul class="flex gap-x-8 gap-y-4">
+                    <li>
+                        <a
+                            href="#try"
+                            class="px-6 py-2 rounded-full text-lg font-medium text-gray-900 hover:text-gray-500 dark:text-white"
+                            >Try</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#feature"
+                            class="px-6 py-2 rounded-full text-lg font-medium text-gray-900 hover:text-gray-500 dark:text-white"
+                            >Feature</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#author"
+                            class="px-6 py-2 rounded-full text-lg font-medium text-gray-900 hover:text-gray-500 dark:text-white"
+                            >Author</a
+                        >
+                    </li>
+                </ul>
+            </nav>
+
+            <nav class="flex items-center gap-x-8 gap-y-4">
+                <ul class="flex gap-x-8 gap-y-4">
+                    <li>
+                        <a
+                            class="github-button flex items-center px-3 py-1.5 border-2 border-transparent bg-gray-900 dark:bg-white text-white dark:text-primary rounded-3xl font-medium transition hover:border-gray-900 dark:hover:border-gray-100 hover:bg-transparent hover:text-gray-900 dark:hover:text-gray-100 dark:hover:bg-primary"
+                            href="https://github.com/armandwipangestu/django-plate-number-detection"
+                            target="_blank"
+                        >
+                            <i class="fab fa-github pr-2"></i>
+                            GitHub
+                        </a>
+                    </li>
+                    <li>
+                        <i
+                            class="fas fa-moon cursor-pointer text-lg mt-3"
+                            id="theme-toggle"
+                        ></i>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="pt-36 pb-36 dark:bg-primary dark:text-white" id="try">
+            <div class="container">
+                <div class="flex flex-wrap">
+                    <div class="w-full self-center px-4 lg:w-1/2">
+                        <h2>Live Video Stream</h2>
+                        <img
+                            src="{% url 'video_plate_feed' %}"
+                            alt="Live Stream"
+                            class="border-dashed border-2 border-primary dark:border-white rounded-3xl mt-2"
+                        />
+                        {% comment %}
+                        <img
+                            src=""
+                            alt="Live Stream"
+                            class="border-dashed border-2 border-primary dark:border-white rounded-3xl mt-2"
+                        />
+                        {% endcomment %}
+
+                        <button
+                            onclick="captureROI()"
+                            class="mt-3 rounded-3xl bg-primary dark:bg-white dark:text-primary px-5 py-2.5 text-base font-semibold text-white transition duration-300 ease-in-out hover:opacity-80 hover:shadow-lg md:px-8 md:py-3"
+                        >
+                            Capture RoI
+                        </button>
+                    </div>
+
+                    <div class="w-full self-center px-4 lg:w-1/2 mt-5">
+                        <h2>Region of Interest (RoI)</h2>
+                        <img
+                            id="roiImage"
+                            src="{% static 'roi_placeholder.png' %}"
+                            alt="ROI will appear here"
+                            class="w-full border-2 border-primary dark:border-white border-dashed rounded-3xl bg-primary-50 hover:bg-primary-100 mt-2"
+                        />
+
+                        <h2 class="mt-5">OCR Result</h2>
+
+                        <div class="relative w-full mt-2">
+                            <div
+                                class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+                            >
+                                <svg
+                                    class="w-4 h-4 text-gray-500"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M15 4V2M15 16V14M8 9H10M20 9H22M17.8 11.8L19 13M17.8 6.2L19 5M3 21L12 12M12.2 6.2L11 5"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                            </div>
+                            <input
+                                type="text"
+                                id="ocrText"
+                                class="bg-primary dark:bg-gray-50 border border-primary text-gray-100 dark:text-gray-900 text-sm rounded-3xl block w-full ps-10 p-2.5"
+                                placeholder="OCR Result will appear here"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <article
+            class="block dark:bg-primary dark:text-white py-10"
+            id="feature"
+        >
+            <div class="container">
+                <div class="flex flex-wrap">
+                    <div class="w-full self-center px-4 lg:w-1/2">
+                        <h1 class="text-4xl font-bold">Feature</h1>
+
+                        <p class="mt-4 text-lg leading-relaxed">
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. Quasi est expedita, suscipit ea quidem
+                            perferendis ex quo quae repudiandae alias quia illum
+                            eaque sint! Ea vel saepe provident reiciendis
+                            incidunt?
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="flex flex-wrap">
+                    <div class="w-full self-center px-4 lg:w-1/3 mt-5">
+                        <div
+                            class="p-10 bg-gray-900 text-white dark:bg-white dark:text-primary rounded-2xl transform transition duration-300 hover:-rotate-3"
+                        >
+                            <i class="fas fa-layer-group text-4xl mb-8"></i>
+                            <h2 class="text-2xl font-semibold">
+                                Live Stream Video
+                            </h2>
+
+                            <p class="mt-2 font-light">
+                                Lorem ipsum, dolor sit amet consectetur
+                                adipisicing elit. Officiis dolores provident
+                                doloribus consectetur nulla esse?
+                            </p>
+                        </div>
+                    </div>
+                    <div class="w-full self-center px-4 lg:w-1/3 mt-5">
+                        <div
+                            class="p-10 bg-gray-900 text-white dark:bg-white dark:text-primary rounded-2xl transform transition duration-300 hover:-rotate-3"
+                        >
+                            <i class="fas fa-chart-simple text-4xl mb-8"></i>
+                            <h2 class="text-2xl font-semibold">
+                                Haarcascade Classifier
+                            </h2>
+
+                            <p class="mt-2 font-light">
+                                Lorem ipsum dolor sit amet consectetur
+                                adipisicing elit. Totam, quae quasi. Consectetur
+                                maxime velit sit.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="w-full self-center px-4 lg:w-1/3 mt-5">
+                        <div
+                            class="p-10 bg-gray-900 text-white dark:bg-white dark:text-primary rounded-2xl transform transition duration-300 hover:-rotate-3"
+                        >
+                            <i class="fas fa-cog text-4xl mb-8"></i>
+                            <h2 class="text-2xl font-semibold">
+                                Optical Character Recognition (OCR)
+                            </h2>
+
+                            <p class="mt-2 font-light">
+                                Lorem ipsum dolor sit, amet consectetur
+                                adipisicing elit. Reprehenderit, dolorem!
+                                <code
+                                    class="bg-gray-800 dark:bg-gray-200 px-1 rounded"
+                                    >Lorem, ipsum dolor.</code
+                                >Lorem ipsum dolor sit, amet consectetur
+                                adipisicing elit.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="block dark:bg-primary dark:text-white" id="author">
+            <div
+                class="border-3 bg-gray-900 text-white dark:bg-white dark:text-primary rounded-lg flex gap-4 p-5 mx-80"
+            >
+                <div class="flex-1 p-20">
+                    <h1 class="text-4xl font-bold">Arman Dwi Pangestu</h1>
+                    <p class="mt-4 font-light text-lg leading-7 pr-20">
+                        I am an Informatics Engineering student at the
+                        University STMIK Bandung. I am a
+                        <span class="font-bold">Junior Web Developer</span>,
+                        <span class="font-bold">Network Technician</span>,
+                        <span class="font-bold">System Administrator</span>, and
+                        <span class="font-bold">Cloud Engineer</span> who is
+                        passionate about learning the technologies needed to
+                        solve problems, I strive to provide an engaging and
+                        functional user experience.
+                    </p>
+
+                    <div class="mt-8 flex gap-8">
+                        <a
+                            href="https://github.com/armandwipangestu"
+                            target="_blank"
+                            class="text-4xl transition-colors duration-150 hover:text-blue-400"
+                        >
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a
+                            href="https://gitlab.com/armandwipangestu"
+                            target="_blank"
+                            class="text-4xl transition-colors duration-150 hover:text-orange-400"
+                        >
+                            <i class="fab fa-gitlab"></i>
+                        </a>
+                        <a
+                            href="https://www.linkedin.com/in/arman-dwi-pangestu"
+                            target="_blank"
+                            class="text-4xl transition-colors duration-150 hover:text-blue-600"
+                        >
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a
+                            href="https://www.youtube.com/channel/UCqo9Q_EpEJWGJLB2xmm_g3A"
+                            target="_blank"
+                            class="text-4xl transition-colors duration-150 hover:text-red-600"
+                        >
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a
+                            href="https://www.instagram.com/devvnnull/"
+                            target="_blank"
+                            class="text-4xl transition-colors duration-150 hover:text-pink-600"
+                        >
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a
+                            href="https://armandwipangestu.vercel.app"
+                            target="_blank"
+                            class="text-4xl transition-colors duration-150 hover:text-green-500"
+                        >
+                            <i class="fas fa-globe"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img
+                        src="{% static 'assets/images/me.webp' %}"
+                        alt="Me"
+                        class="relative z-10 mx-auto w-64 p-8"
+                    />
+                    <span class="absolute -right-12 bottom-12 transform">
+                        <svg
+                            width="350"
+                            height="350"
+                            viewBox="0 0 200 200"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                fill="#31B5D5"
+                                d="M64.1,-21.5C70.9,-0.1,55.7,27.8,33.1,43.8C10.5,59.7,-19.4,63.8,-40.2,49.9C-61,36.1,-72.8,4.3,-64.5,-19.2C-56.3,-42.7,-28.2,-57.9,0.3,-57.9C28.7,-58,57.4,-43,64.1,-21.5Z"
+                                transform="translate(100 100) scale(1.1)"
+                            />
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </article>
+
+        <div class="h-32 dark:bg-primary dark:text-white"></div>
+
+        <script>
+            function captureROI() {
+                fetch("{% url 'capture_roi' %}")
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.image) {
+                            document.getElementById("roiImage").src =
+                                data.image;
+                            document.getElementById("ocrText").value =
+                                data.text;
+                        } else if (data.error) {
+                            document.getElementById("ocrText").value =
+                                data.error;
+                        }
+                    })
+                    .catch((error) =>
+                        console.error("Error capturing ROI:", error)
+                    );
+            }
+        </script>
+
+        <script
+            src="https://kit.fontawesome.com/e31150d3f1.js"
+            crossorigin="anonymous"
+        ></script>
+        <script src="{% static 'assets/js/scripts.js' %}"></script>
+    </body>
+</html>
