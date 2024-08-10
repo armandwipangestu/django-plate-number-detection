@@ -30,7 +30,7 @@
 
 ## Demo App
 
-![Django Plate Number Detection](https://youtu.be/UhFOGqWI2NE)
+https://github.com/user-attachments/assets/b2837dfc-e000-4687-99eb-3744370d05ef
 
 ## Tech Stack
 
